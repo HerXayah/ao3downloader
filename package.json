@@ -1,0 +1,29 @@
+{
+   "name": "AO3Downloader",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "build": "tsc",
+      "start": "node dist/app.js",
+      "dev": "ts-node src/app.ts",
+      "build-docker": "docker build -t ao3downloader ."
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "packageManager": "pnpm@10.6.4",
+   "devDependencies": {
+      "@types/fs-extra": "^11.0.4",
+      "@types/node": "^24.7.0",
+      "ts-node": "^10.9.2",
+      "typescript": "^5.9.3"
+   },
+   "dependencies": {
+      "@types/inquirer": "^9.0.9",
+      "axios": "^1.12.2",
+      "cheerio": "^1.1.2",
+      "fs-extra": "^11.3.2",
+      "inquirer": "^12.9.6"
+   }
+}

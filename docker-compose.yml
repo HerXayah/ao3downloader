@@ -1,0 +1,10 @@
+services:
+  ao3downloader:
+    build: .
+    container_name: ao3downloader
+    stdin_open: true
+    tty: true
+    volumes:
+      # example for my use case
+      - /opt/books/:/app/books
+    restart: unless-stopped
