@@ -30,9 +30,8 @@ async function main() {
 
       const ids = trimmed.split(' ').filter(Boolean);
       for (const id of ids) {
-         console.log(`\n Processing ${id}...`);
+         console.log(`\nProcessing ${id}...`);
          await getAO3Title(id);
-         console.log(`Finished downloading ${id}!`);
       }
       console.log('\n');
    }
@@ -40,32 +39,31 @@ async function main() {
 
 main();
 
-function getAO3Title(ids: string) {
+async function getAO3Title(ids: string) {
    const url = `${ao3URL}/works/`;
    let idarray = ids.split(' ');
-   idarray.forEach((id) => {
-      webscraping(`${url}${id}`).then((value) => {
+   for (const id of idarray) {
+      await webscraping(`${url}${id}`).then(async (value) => {
          // check if files exist
          if (fs.existsSync(`./books/${value.replace(' ', '_')}.epub`)) {
             console.log(
-               `The file already exists! \n Please delete or move ${value.replace(
+               `\nThe file already exists! \nPlease delete or move ${value.replace(
                   ' ',
                   '_'
                )}.epub to re-download it! \n`
             );
          } else {
-            downloadEPUB(value, id).then((downloadedFile) => {
-               finishedDownload(
-                  downloadedFile.data.pipe(
-                     fs.createWriteStream(
-                        `./books/${value.replace(' ', '_')}.epub`
-                     )
+            const downloadedFile = await downloadEPUB(value, id);
+            await finishedDownload(
+               downloadedFile.data.pipe(
+                  fs.createWriteStream(
+                     `./books/${value.replace(' ', '_')}.epub`
                   )
-               );
-            });
+               )
+            );
          }
       });
-   });
+   }
 }
 
 async function webscraping(url: string) {
