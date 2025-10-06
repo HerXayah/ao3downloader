@@ -11,6 +11,12 @@ _Also got no clue what bomb will go off when you try to download a Fanfic that r
 
 This does not rate limit at all lol.
 
+## Example Usage
+
+![uwu](./media/gif.gif)
+
+Type exit to quit btw
+
 ## How to attach
 
 `docker attach ao3downloader`
