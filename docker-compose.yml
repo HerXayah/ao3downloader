@@ -8,3 +8,4 @@ services:
       # example for my use case
       - /opt/books/:/app/books
     restart: unless-stopped
+    command: node /app/dist/app.js
