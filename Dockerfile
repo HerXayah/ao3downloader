@@ -6,4 +6,4 @@ RUN npm install
 COPY . .
 RUN mkdir -p /app/books
 RUN npm run build
-CMD ["npm", "start"]
+CMD ["npm", "start", "--no-stdin"]
