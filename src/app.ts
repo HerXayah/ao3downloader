@@ -24,6 +24,9 @@ async function main() {
       if (trimmed === 'exit' || trimmed === 'quit') {
          console.log('Exiting...');
          process.exit(0);
+      } else if (trimmed.match('[a-zA-Z]+')) {
+         console.log('\nPlease input numbers only!\n');
+         continue;
       }
 
       if (!trimmed) continue;
@@ -33,7 +36,7 @@ async function main() {
          console.log(`\nProcessing ${id}...`);
          await getAO3Title(id);
       }
-      console.log('\n');
+      console.log('\nFinished all files!\n');
    }
 }
 
@@ -43,26 +46,30 @@ async function getAO3Title(ids: string) {
    const url = `${ao3URL}/works/`;
    let idarray = ids.split(' ');
    for (const id of idarray) {
-      await webscraping(`${url}${id}`).then(async (value) => {
-         // check if files exist
-         if (fs.existsSync(`./books/${value.replace(' ', '_')}.epub`)) {
-            console.log(
-               `\nThe file already exists! \nPlease delete or move ${value.replace(
-                  ' ',
-                  '_'
-               )}.epub to re-download it! \n`
-            );
-         } else {
-            const downloadedFile = await downloadEPUB(value, id);
-            await finishedDownload(
-               downloadedFile.data.pipe(
-                  fs.createWriteStream(
-                     `./books/${value.replace(' ', '_')}.epub`
+      try {
+         await webscraping(`${url}${id}`).then(async (value) => {
+            // check if files exist
+            if (fs.existsSync(`./books/${value.replace(' ', '_')}.epub`)) {
+               console.log(
+                  `\nThe file already exists! \nPlease delete or move ${value.replace(
+                     ' ',
+                     '_'
+                  )}.epub to re-download it! \n`
+               );
+            } else {
+               const downloadedFile = await downloadEPUB(value, id);
+               await finishedDownload(
+                  downloadedFile.data.pipe(
+                     fs.createWriteStream(
+                        `./books/${value.replace(' ', '_')}.epub`
+                     )
                   )
-               )
-            );
-         }
-      });
+               );
+            }
+         });
+      } catch (error) {
+         console.log('\nWe got an Error! ' + error + '\n');
+      }
    }
 }
 
