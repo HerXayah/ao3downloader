@@ -22,7 +22,7 @@ export async function getAO3Title(ids: string) {
                   `\nThe file already exists! \nPlease delete or move ${name} to re-download it! \n`
                );
             } else {
-               const downloadedFile = await downloadEPUB(value, id);
+               const downloadedFile = await downloadEPUB(name, id);
                await finishedDownload(
                   downloadedFile.data.pipe(
                      fs.createWriteStream(`${path}${name}`)
@@ -45,10 +45,7 @@ async function webscraping(url: string) {
 }
 
 async function downloadEPUB(name: string, id: string) {
-   const downloadEPUBURL = `https://archiveofourown.org/downloads/${id}/${name.replace(
-      ' ',
-      '_'
-   )}.epub`;
+   const downloadEPUBURL = `https://archiveofourown.org/downloads/${id}/${name}`;
    return await axios({
       method: 'GET',
       url: downloadEPUBURL,
