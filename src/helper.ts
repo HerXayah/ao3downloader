@@ -15,20 +15,17 @@ export async function getAO3Title(ids: string) {
       try {
          await webscraping(`${url}${id}`).then(async (value) => {
             // check if files exist
-            if (fs.existsSync(`./books/${value.replace(' ', '_')}.epub`)) {
+            const name = `${value.replace(' ', '_')}.epub`;
+            const path = './books/';
+            if (fs.existsSync(`${path}${name}`)) {
                console.log(
-                  `\nThe file already exists! \nPlease delete or move ${value.replace(
-                     ' ',
-                     '_'
-                  )}.epub to re-download it! \n`
+                  `\nThe file already exists! \nPlease delete or move ${name} to re-download it! \n`
                );
             } else {
                const downloadedFile = await downloadEPUB(value, id);
                await finishedDownload(
                   downloadedFile.data.pipe(
-                     fs.createWriteStream(
-                        `./books/${value.replace(' ', '_')}.epub`
-                     )
+                     fs.createWriteStream(`${path}${name}`)
                   )
                );
             }
@@ -60,9 +57,9 @@ async function downloadEPUB(name: string, id: string) {
 }
 
 export async function checkFolder(path: string) {
-    if(fs.pathExistsSync(`${__dirname}/../${path}`)) {
-        return false;
-    } else {
-    return true;
-    }
+   if (fs.pathExistsSync(`${__dirname}/../${path}`)) {
+      return false;
+   } else {
+      return true;
+   }
 }

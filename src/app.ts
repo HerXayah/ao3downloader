@@ -1,17 +1,11 @@
-import { getAO3Title, checkFolder } from './helper'
-import * as stream from 'stream';
-import { promisify } from 'util';
+import { getAO3Title, checkFolder } from './helper';
 import inquirer from 'inquirer';
 import fs from 'fs';
 
-const finishedDownload = promisify(stream.finished);
-
-//let ao3ID = '69188231 66069910';
-
 async function main() {
-   if(await checkFolder("/books/")) {
+   if (await checkFolder('/books/')) {
       try {
-      fs.mkdirSync(`${__dirname}/../books/`);
+         fs.mkdirSync(`${__dirname}/../books/`);
       } catch (error) {
          console.log(error);
       }
