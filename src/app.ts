@@ -1,16 +1,21 @@
-import axios from 'axios';
-import { load } from 'cheerio';
-import fs from 'fs-extra';
+import { getAO3Title, checkFolder } from './helper'
 import * as stream from 'stream';
 import { promisify } from 'util';
 import inquirer from 'inquirer';
+import fs from 'fs';
 
 const finishedDownload = promisify(stream.finished);
 
 //let ao3ID = '69188231 66069910';
-let ao3URL = `https://archiveofourown.org`;
 
 async function main() {
+   if(await checkFolder("/books/")) {
+      try {
+      fs.mkdirSync(`${__dirname}/../books/`);
+      } catch (error) {
+         console.log(error);
+      }
+   }
    while (true) {
       const { input } = await inquirer.prompt([
          {
@@ -41,54 +46,3 @@ async function main() {
 }
 
 main();
-
-async function getAO3Title(ids: string) {
-   const url = `${ao3URL}/works/`;
-   let idarray = ids.split(' ');
-   for (const id of idarray) {
-      try {
-         await webscraping(`${url}${id}`).then(async (value) => {
-            // check if files exist
-            if (fs.existsSync(`./books/${value.replace(' ', '_')}.epub`)) {
-               console.log(
-                  `\nThe file already exists! \nPlease delete or move ${value.replace(
-                     ' ',
-                     '_'
-                  )}.epub to re-download it! \n`
-               );
-            } else {
-               const downloadedFile = await downloadEPUB(value, id);
-               await finishedDownload(
-                  downloadedFile.data.pipe(
-                     fs.createWriteStream(
-                        `./books/${value.replace(' ', '_')}.epub`
-                     )
-                  )
-               );
-            }
-         });
-      } catch (error) {
-         console.log('\nWe got an Error! ' + error + '\n');
-      }
-   }
-}
-
-async function webscraping(url: string) {
-   const response = axios.get(url);
-   let html = (await response).data;
-   const $ = load(html);
-   const titleElement = $('div.preface').first();
-   return $(titleElement).find('h2').first().text().trim();
-}
-
-async function downloadEPUB(name: string, id: string) {
-   const downloadEPUBURL = `https://archiveofourown.org/downloads/${id}/${name.replace(
-      ' ',
-      '_'
-   )}.epub`;
-   return await axios({
-      method: 'GET',
-      url: downloadEPUBURL,
-      responseType: 'stream',
-   });
-}
