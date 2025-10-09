@@ -15,7 +15,8 @@ export async function getAO3Title(ids: string) {
       try {
          await webscraping(`${url}${id}`).then(async (value) => {
             // check if files exist
-            const name = `${value.replace(' ', '_')}.epub`;
+            const name = `${value.replaceAll(' ', '_')}.epub`;
+            console.log('Got book name... Now downloading!');
             const path = './books/';
             if (fs.existsSync(`${path}${name}`)) {
                console.log(
